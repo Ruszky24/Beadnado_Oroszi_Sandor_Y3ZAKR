@@ -144,7 +144,25 @@ public class StepCounterViewModel : ViewModelBase
     }
 
     /// <summary>Emulátoron nehéz lépést szimulálni, ezért van egy teszt gomb is.</summary>
-    public void SimulateStep() => Steps++;
+    public void SimulateStep()
+    {
+        if (!IsRunning)
+            return;
+
+        AddStep();
+    }
+
+    /// <summary>
+    /// Egy lépés hozzáadása. Ha ezzel elértük a célt, a mérés automatikusan leáll
+    /// (a Stop() elmenti a mérést a listába és kiírja a gratulációt).
+    /// </summary>
+    private void AddStep()
+    {
+        Steps++;
+
+        if (IsGoalReached)
+            Stop();
+    }
 
     // ---------- Szenzor feldolgozás ----------
 
@@ -156,6 +174,10 @@ public class StepCounterViewModel : ViewModelBase
         // A UI-t mindig a fő szálon frissítjük
         MainThread.BeginInvokeOnMainThread(() =>
         {
+            // A leállítás után még beérkező, sorban álló mérések ne számoljanak
+            if (!IsRunning)
+                return;
+
             X = a.X;
             Y = a.Y;
             Z = a.Z;
@@ -175,10 +197,7 @@ public class StepCounterViewModel : ViewModelBase
         {
             _isAboveThreshold = true;
             _lastStepTime = now;
-            Steps++;
-
-            if (Steps == Goal)
-                StatusMessage = "Cél elérve! 🎉";
+            AddStep();
         }
         else if (_isAboveThreshold && _filteredMagnitude < LowerThreshold)
         {
