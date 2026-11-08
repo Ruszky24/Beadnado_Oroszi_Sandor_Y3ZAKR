@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Beadnado_Oroszi_Sandor_Y3ZAKR.ViewModels"
+             xmlns:conv="clr-namespace:Beadnado_Oroszi_Sandor_Y3ZAKR.Converters"
+             x:Class="Beadnado_Oroszi_Sandor_Y3ZAKR.Views.CompassPage"
+             x:DataType="vm:CompassViewModel"
+             Title="Iránytű">
+
+    <ContentPage.BindingContext>
+        <vm:CompassViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <conv:BoolToColorConverter x:Key="NorthColor" TrueColor="ForestGreen" FalseColor="{StaticResource Gray500}" />
+    </ContentPage.Resources>
+
+    <VerticalStackLayout Padding="16" Spacing="24" VerticalOptions="Center">
+
+        <Label Text="{Binding DirectionText}" FontSize="48" FontAttributes="Bold"
+               HorizontalOptions="Center"
+               TextColor="{Binding IsFacingNorth, Converter={StaticResource NorthColor}}" />
+
+        <Label Text="{Binding Heading, StringFormat='{0:F0}°'}" FontSize="24"
+               HorizontalOptions="Center" />
+
+        <!-- Iránytű-lap -->
+        <Grid WidthRequest="260" HeightRequest="260" HorizontalOptions="Center">
+            <Ellipse Stroke="{StaticResource Primary}" StrokeThickness="4" />
+
+            <Label Text="É" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,8" />
+            <Label Text="D" HorizontalOptions="Center" VerticalOptions="End" Margin="0,8" />
+            <Label Text="K" HorizontalOptions="End" VerticalOptions="Center" Margin="10,0" />
+            <Label Text="Ny" HorizontalOptions="Start" VerticalOptions="Center" Margin="10,0" />
+
+            <!-- A tű: a Rotation tulajdonság a ViewModel NeedleRotation értékéhez van kötve -->
+            <Grid RowDefinitions="*,*" WidthRequest="14" HeightRequest="190"
+                  Rotation="{Binding NeedleRotation}">
+                <BoxView Color="Red" CornerRadius="7,7,0,0" />
+                <BoxView Grid.Row="1" Color="{StaticResource Gray500}" CornerRadius="0,0,7,7" />
+            </Grid>
+        </Grid>
+
+        <Label Text="{Binding StatusMessage}" HorizontalOptions="Center" FontAttributes="Italic" />
+    </VerticalStackLayout>
+</ContentPage>
