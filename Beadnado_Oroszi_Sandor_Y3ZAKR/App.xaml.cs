@@ -1,5 +1,3 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
 namespace Beadnado_Oroszi_Sandor_Y3ZAKR
 {
     public partial class App : Application
@@ -7,6 +5,9 @@ namespace Beadnado_Oroszi_Sandor_Y3ZAKR
         public App()
         {
             InitializeComponent();
+
+            // A felület sötét témára készült, ezért rögzítjük
+            UserAppTheme = AppTheme.Dark;
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
